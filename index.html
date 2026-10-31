@@ -1,114 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SubTrack — Subscription Management</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubTrack | Subscription Management</title>
+<style>
+:root{--nav:#103b35;--nav2:#1c5149;--green:#087e70;--mint:#d9f4ec;--bg:#f3f7f5;--ink:#18312d;--muted:#71827e;--line:#e4ece8;--white:#fff;--red:#c94d4d;--amber:#b7791f;--shadow:0 8px 28px #173d3210}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{display:flex;min-height:100vh}.sidebar{width:250px;background:var(--nav);color:#eaf8f3;padding:25px 16px;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;z-index:5}.brand{display:flex;align-items:center;gap:12px;font-size:25px;font-weight:800;margin:8px 6px 45px}.logo{width:46px;height:46px;border-radius:14px;background:#b9eadc;color:var(--nav);display:grid;place-items:center;font-size:26px}.nav-label{font-size:11px;letter-spacing:2px;color:#9cc4b9;margin:0 12px 12px}.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#d7e9e3;text-align:left;padding:13px 14px;border-radius:11px;font-size:15px}.nav button:hover,.nav button.active{background:#28564e;color:#fff}.side-foot{margin-top:auto;color:#9fc4b9;font-size:12px;padding:12px}
+.main{margin-left:250px;width:calc(100% - 250px);padding:30px 34px 60px;max-width:1700px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--green);font-weight:800;text-transform:uppercase}.top h1{margin:8px 0 0;font-size:32px}.top-actions{display:flex;gap:12px;align-items:center}.role{background:#dff4ed;color:#12685d;padding:11px 17px;border-radius:30px;font-size:12px;font-weight:800}
+.btn{border:0;background:var(--green);color:#fff;border-radius:10px;padding:12px 17px;font-weight:700}.btn:hover{filter:brightness(.94)}.btn.light{background:#e4f4ef;color:#12685d}.btn.ghost{background:#f0f5f2;color:#35544c}.btn.danger{background:#fff0f0;color:var(--red)}.btn.small{padding:7px 10px;font-size:12px;border-radius:8px}
+.hero{background:linear-gradient(110deg,#123f38,#197b6b);color:#fff;border-radius:20px;padding:35px 40px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:center;min-height:210px}.hero .eyebrow{color:#9cebd6}.hero h2{font-size:30px;margin:17px 0 12px}.hero p{color:#d1eee6;margin:0 0 22px}.hero-mark{font-size:75px;color:#a9e8d8;padding:0 25px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:20px 0}.stat,.panel,.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.stat{padding:22px 24px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:28px;margin:14px 0 8px}.stat span{font-size:12px;color:#9aa9a4}.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}.panel{padding:22px;margin-top:18px}.panel h3{margin:0 0 18px;font-size:17px}.section-head{display:flex;justify-content:space-between;align-items:center;margin:25px 0 15px}.section-head h2{margin:0;font-size:22px}.muted{color:var(--muted)}.toolbar{display:flex;gap:10px;align-items:center;margin:16px 0}.search{max-width:330px;flex:1}.field{width:100%;padding:11px 12px;border:1px solid #dce7e1;border-radius:9px;background:#fff;color:var(--ink);outline:none}.field:focus{border-color:#48a998;box-shadow:0 0 0 3px #0b8b7618}.table-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:14px}table{border-collapse:collapse;width:100%;min-width:700px}th,td{text-align:left;padding:15px 17px;border-bottom:1px solid #edf1ef;font-size:13px}th{background:#f8fbf9;color:#71827e;font-size:11px;text-transform:uppercase;letter-spacing:.7px}tr:last-child td{border-bottom:0}.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#e7f6ef;color:#21805e}.status.Paused,.status.Draft,.status.Pending{background:#fff4df;color:#a56c12}.status.Cancelled,.status.Overdue{background:#ffeded;color:#bd4545}.status.Paid,.status.Active,.status.Confirmed{background:#e7f6ef;color:#21805e}.empty{padding:40px;text-align:center;color:#91a19b}.empty b{display:block;color:#425a53;margin-bottom:7px}.actions{display:flex;gap:6px;flex-wrap:wrap}.barline{height:9px;background:#edf3f0;border-radius:9px;overflow:hidden;margin:10px 0 17px}.barline i{display:block;height:100%;background:#159681;border-radius:9px}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.quick button{padding:18px;border:1px solid var(--line);border-radius:12px;background:#fbfdfc;text-align:left;color:var(--ink);font-weight:700}.quick button span{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:6px}
+.modal-back{position:fixed;inset:0;background:#102b26a6;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal-back.show{display:flex}.modal{background:#fff;border-radius:17px;width:min(560px,100%);max-height:90vh;overflow:auto;padding:25px;box-shadow:0 20px 70px #0003}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modal-head h2{margin:0}.close{border:0;background:#f0f4f2;border-radius:8px;padding:8px 11px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form-group{display:grid;gap:6px}.form-group.full{grid-column:1/-1}.form-group label{font-size:12px;color:#60736c;font-weight:700}.modal-foot{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}.toast{position:fixed;right:25px;bottom:25px;background:#153f37;color:#fff;padding:13px 18px;border-radius:10px;box-shadow:var(--shadow);display:none;z-index:30}.toast.show{display:block}
+@media(max-width:1000px){.sidebar{width:210px}.main{margin-left:210px;width:calc(100% - 210px);padding:24px}.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:680px){.sidebar{position:static;width:100%;height:auto;padding:12px}.app{display:block}.brand{margin:0 5px 12px}.nav{display:flex;overflow-x:auto}.nav-label,.side-foot{display:none}.nav button{white-space:nowrap;padding:10px}.main{margin:0;width:100%;padding:20px 14px}.top h1{font-size:25px}.hero{padding:25px;min-height:0}.hero h2{font-size:23px}.hero-mark{display:none}.stats{gap:10px}.stat{padding:16px}.stat strong{font-size:23px}.quick{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}}
+</style></head>
 <body>
-  <aside class="sidebar">
-    <div class="brand">SubTrack</div>
-    <p class="tagline">Subscription Management</p>
-    <nav>
-      <button class="nav active" data-section="dashboard">Dashboard</button>
-      <button class="nav" data-section="subscriptions">Subscriptions</button>
-      <button class="nav" data-section="analytics">Analytics</button>
-    </nav>
-    <div class="side-note">
-      <strong>Hackathon MVP</strong>
-      <span>Track renewals, spending and subscription status in one place.</span>
-    </div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <div>
-        <h1 id="pageTitle">Dashboard</h1>
-        <p>Keep every recurring payment under control.</p>
-      </div>
-      <button class="primary" id="openModal">+ Add Subscription</button>
-    </header>
-
-    <section id="dashboard" class="section active-section">
-      <div class="stats">
-        <article class="card"><span>Monthly spend</span><strong id="monthlySpend">₹0</strong><small>Estimated recurring cost</small></article>
-        <article class="card"><span>Active subscriptions</span><strong id="activeCount">0</strong><small>Currently running</small></article>
-        <article class="card"><span>Due in 7 days</span><strong id="dueCount">0</strong><small>Renewals approaching</small></article>
-        <article class="card"><span>Yearly estimate</span><strong id="yearlySpend">₹0</strong><small>Projected recurring cost</small></article>
-      </div>
-
-      <div class="grid two">
-        <article class="panel">
-          <div class="panel-head"><h2>Upcoming renewals</h2><button class="link-btn" data-go="subscriptions">View all</button></div>
-          <div id="upcoming"></div>
-        </article>
-        <article class="panel">
-          <div class="panel-head"><h2>Spending by category</h2></div>
-          <div id="categoryChart" class="bars"></div>
-        </article>
-      </div>
-    </section>
-
-    <section id="subscriptions" class="section">
-      <div class="toolbar">
-        <input id="search" placeholder="Search subscriptions...">
-        <select id="filter">
-          <option value="all">All</option>
-          <option value="active">Active</option>
-          <option value="paused">Paused</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-      </div>
-      <div class="panel">
-        <div id="subscriptionList"></div>
-      </div>
-    </section>
-
-    <section id="analytics" class="section">
-      <div class="grid two">
-        <article class="panel">
-          <h2>Cost overview</h2>
-          <div id="analyticsText"></div>
-        </article>
-        <article class="panel">
-          <h2>Smart actions</h2>
-          <ul class="tips">
-            <li>Review subscriptions you have not used recently.</li>
-            <li>Set renewal reminders before the billing date.</li>
-            <li>Compare monthly and yearly plans before renewing.</li>
-            <li>Cancel or pause subscriptions you no longer need.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <div class="modal hidden" id="modal">
-    <div class="modal-card">
-      <button class="close" id="closeModal">×</button>
-      <h2>Add subscription</h2>
-      <form id="form">
-        <label>Service name<input required name="name" placeholder="Netflix"></label>
-        <label>Category
-          <select name="category">
-            <option>Entertainment</option><option>Software</option><option>Education</option>
-            <option>Fitness</option><option>Cloud</option><option>Other</option>
-          </select>
-        </label>
-        <label>Price (₹)<input required min="1" type="number" name="price" placeholder="649"></label>
-        <label>Billing
-          <select name="billing"><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select>
-        </label>
-        <label>Next renewal<input required type="date" name="renewal"></label>
-        <label>Status
-          <select name="status"><option value="active">Active</option><option value="paused">Paused</option><option value="cancelled">Cancelled</option></select>
-        </label>
-        <button class="primary full" type="submit">Save subscription</button>
-      </form>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
-</html>
+<div class="app">
+<aside class="sidebar"><div class="brand"><div class="logo">S</div>SubTrack</div><div class="nav-label">WORKSPACE</div><nav class="nav" id="nav">
+<button class="active" data-page="Dashboard">▦ Dashboard</button><button data-page="Products & Plans">▣ Products & Plans</button><button data-page="Customers">♙ Customers</button><button data-page="Subscriptions">◷ Subscriptions</button><button data-page="Quotations">▤ Quotations</button><button data-page="Invoices">▧ Invoices</button><button data-page="Payments">₹ Payments</button><button data-page="Discounts">％ Discounts</button><button data-page="Reports">◉ Reports</button>
+</nav><div class="side-foot">Brightloop Software<br>Subscription Management</div></aside>
+<main class="main"><header class="top"><div><div class="eyebrow">BRIGHTLOOP SOFTWARE / MANAGEMENT</div><h1 id="pageTitle">Dashboard</h1></div><div class="top-actions"><span class="role">ADMIN</span><button class="btn" id="createBtn">+ Create new</button></div></header><div id="content"></div></main>
+</div>
+<div class="modal-back" id="modalBack"><div class="modal"><div class="modal-head"><h2 id="modalTitle">Add new</h2><button class="close" id="closeModal">✕</button></div><form id="recordForm"><div class="form-grid" id="formFields"></div><div class="modal-foot"><button type="button" class="btn ghost" id="cancelModal">Cancel</button><button class="btn" type="submit">Save record</button></div></form></div></div><div class="toast" id="toast"></div>
+<script>
+const KEY='subtrack_complete_v1';
+const blank={customers:[],plans:[],subscriptions:[],quotations:[],invoices:[],payments:[],discounts:[]};
+let db;try{db=JSON.parse(localStorage.getItem(KEY))||structuredClone(blank)}catch(e){db=JSON.parse(JSON.stringify(blank))}
+Object.keys(blank).forEach(k=>{if(!Array.isArray(db[k]))db[k]=[]});
+let page='Dashboard',editing=null;
+const $=s=>document.querySelector(s), money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2}), id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function toast(s){let t=$('#toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const names={customers:'Customers',plans:'Products & Plans',subscriptions:'Subscriptions',quotations:'Quotations',invoices:'Invoices',payments:'Payments',discounts:'Discounts'};
+const cfg={
+'Products & Plans':{key:'plans',fields:[['name','Plan / product name','text',1],['type','Type','select','Software'],['price','Sales price (₹)','number',1],['cost','Cost price (₹)','number',0],['frequency','Billing frequency','select','Monthly'],['notes','Notes','text','']]},
+Customers:{key:'customers',fields:[['name','Customer name','text',1],['email','Email address','email',1],['phone','Phone','text',''],['company','Company','text',''],['status','Status','select','Active']]},
+Subscriptions:{key:'subscriptions',fields:[['customer','Customer','ref','customers'],['plan','Plan','ref','plans'],['quantity','Quantity','number',1],['start','Start date','date',1],['next','Next renewal','date',1],['status','Status','select','Active']]},
+Quotations:{key:'quotations',fields:[['customer','Customer','ref','customers'],['plan','Plan','ref','plans'],['date','Quotation date','date',1],['valid','Valid until','date',1],['status','Status','select','Draft']]},
+Invoices:{key:'invoices',fields:[['customer','Customer','ref','customers'],['subscription','Subscription / reference','text',''],['amount','Amount (₹)','number',1],['due','Due date','date',1],['status','Status','select','Draft']]},
+Payments:{key:'payments',fields:[['customer','Customer','ref','customers'],['invoice','Invoice ID','ref','invoices'],['amount','Amount (₹)','number',1],['date','Payment date','date',1],['method','Payment method','select','UPI'],['note','Note','text','']]},
+Discounts:{key:'discounts',fields:[['name','Discount name','text',1],['kind','Discount type','select','Percentage'],['value','Value','number',1],['minimum','Minimum purchase (₹)','number',0],['validUntil','Valid until','date',''],['uses','Usage limit','number',0]]}
+};
+function nav(p){page=p;$('#pageTitle').textContent=p;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));render()}
+function stats(){let active=db.subscriptions.filter(x=>x.status==='Active').length,rev=db.subscriptions.filter(x=>x.status==='Active').reduce((a,x)=>a+(+x.amount||(+db.plans.find(p=>p.name===x.plan)?.price||0)*(+x.quantity||1)),0),paid=db.payments.reduce((a,x)=>a+(+x.amount||0),0),out=db.invoices.filter(x=>x.status!=='Paid').reduce((a,x)=>a+(+x.amount||0),0);return [active,rev,paid,out]}
+function dashboard(){let s=stats();return `<section class="hero"><div><div class="eyebrow">BUSINESS OVERVIEW</div><h2>Run your subscription business smarter.</h2><p>Manage products, customers, recurring billing and revenue from one place.</p><button class="btn light" onclick="nav('Subscriptions')">Manage subscriptions →</button></div><div class="hero-mark">↗</div></section><div class="stats">${[['Active subscriptions',s[0],'Currently running'],['Monthly recurring revenue',money(s[1]),'Active subscription value'],['Collected payments',money(s[2]),'Total recorded payments'],['Outstanding amount',money(s[3]),'Unpaid invoice balance'],['Total customers',db.customers.length,'Registered customers'],['Total products',db.plans.length,'Available plans'],['Overdue invoices',db.invoices.filter(x=>x.status==='Overdue').length,'Require attention'],['Revenue this month',money(s[2]),'Recorded payments']].map(x=>`<div class="stat"><small>${x[0]}</small><strong>${x[1]}</strong><span>${x[2]}</span></div>`).join('')}</div><div class="grid2"><div class="panel"><h3>Quick actions</h3><div class="quick"><button onclick="openForm('Customers')">＋ Add customer<span>Create a customer record</span></button><button onclick="openForm('Products & Plans')">＋ Add plan<span>Create a product or plan</span></button><button onclick="openForm('Subscriptions')">＋ New subscription<span>Start a subscription</span></button></div></div><div class="panel"><h3>Recent activity</h3><p class="muted">You have ${db.customers.length} customers, ${db.subscriptions.length} subscriptions and ${db.invoices.length} invoices in your workspace.</p><button class="btn light" onclick="nav('Reports')">View reports →</button></div></div>`}
+function tablePage(p){let c=cfg[p],arr=db[c.key],q=($('#search')?.value||'').toLowerCase();let filtered=arr.filter(x=>Object.values(x).join(' ').toLowerCase().includes(q));let cols=c.fields.map(f=>f[0]);if(p==='Subscriptions')cols=['customer','plan','quantity','start','next','status'];if(p==='Invoices')cols=['id','customer','amount','due','status'];if(p==='Payments')cols=['id','customer','invoice','amount','date','method'];if(p==='Quotations')cols=['id','customer','plan','date','valid','status'];let label=k=>({id:'ID',name:'Name',customer:'Customer',plan:'Plan',quantity:'Qty',start:'Start date',next:'Next renewal',amount:'Amount',due:'Due date',date:'Date',valid:'Valid until',method:'Method',status:'Status',email:'Email',phone:'Phone',company:'Company',price:'Price',frequency:'Frequency',type:'Type',value:'Value',kind:'Discount type',invoice:'Invoice'}[k]||k);return `<div class="section-head"><h2>${p}</h2><button class="btn" onclick="openForm('${p}')">＋ Add ${p==='Products & Plans'?'plan':p.slice(0,-1)}</button></div><div class="toolbar"><input id="search" class="field search" placeholder="Search ${p.toLowerCase()}..." oninput="refreshTable()"><span class="muted">${filtered.length} records</span></div><div class="table-wrap" id="tableWrap">${renderRows(filtered,cols,c.key)}</div>`}
+function renderRows(arr,cols,key){if(!arr.length)return `<div class="empty"><b>No records yet</b>Add your first record to get started.</div>`;return `<table><thead><tr>${cols.map(k=>`<th>${labelFor(k)}</th>`).join('')}<th>Actions</th></tr></thead><tbody>${arr.map(x=>`<tr>${cols.map(k=>`<td>${k==='status'?`<span class="status ${esc(x[k])}">${esc(x[k]||'—')}</span>`:k==='amount'||k==='price'?money(x[k]):k==='id'?esc((x.id||'').slice(-6).toUpperCase()):esc(x[k]||'—')}</td>`).join('')}<td><div class="actions">${key==='invoices'&&x.status!=='Paid'?`<button class="btn small light" onclick="markPaid('${x.id}')">Mark paid</button>`:''}<button class="btn small ghost" onclick="editRecord('${key}','${x.id}')">Edit</button><button class="btn small danger" onclick="removeRecord('${key}','${x.id}')">Delete</button></div></td></tr>`).join('')}</tbody></table>`}
+function labelFor(k){return ({id:'ID',customer:'Customer',plan:'Plan',quantity:'Qty',start:'Start date',next:'Next renewal',amount:'Amount',due:'Due date',date:'Date',valid:'Valid until',method:'Method',status:'Status',email:'Email',phone:'Phone',company:'Company',price:'Price',frequency:'Frequency',type:'Type',value:'Value',kind:'Discount type',invoice:'Invoice'}[k]||k)}
+function refreshTable(){let c=cfg[page];let q=($('#search')?.value||'').toLowerCase();let arr=db[c.key].filter(x=>Object.values(x).join(' ').toLowerCase().includes(q));let cols=page==='Invoices'?['id','customer','amount','due','status']:page==='Payments'?['id','customer','invoice','amount','date','method']:page==='Quotations'?['id','customer','plan','date','valid','status']:page==='Subscriptions'?['customer','plan','quantity','start','next','status']:c.fields.map(f=>f[0]);$('#tableWrap').innerHTML=renderRows(arr,cols,c.key)}
+function reports(){let s=stats();return `<div class="stats">${[['Active subscriptions',s[0]],['Collected revenue',money(s[2])],['Outstanding invoices',money(s[3])],['Customers',db.customers.length]].map(x=>`<div class="stat"><small>${x[0]}</small><strong>${x[1]}</strong></div>`).join('')}</div><div class="panel"><h3>Business summary</h3><p>Subscriptions: <b>${db.subscriptions.length}</b></p><div class="barline"><i style="width:${db.subscriptions.length?Math.min(100,s[0]/db.subscriptions.length*100):0}%"></i></div><p>Invoices: <b>${db.invoices.length}</b> · Paid: <b>${db.invoices.filter(x=>x.status==='Paid').length}</b> · Unpaid: <b>${db.invoices.filter(x=>x.status!=='Paid').length}</b></p><p class="muted">This report is calculated from the records stored in this browser.</p></div>`}
+function render(){let el=$('#content');if(page==='Dashboard')el.innerHTML=dashboard();else if(page==='Reports')el.innerHTML=reports();else if(cfg[page])el.innerHTML=tablePage(page);else el.innerHTML='<div class="empty">Page not found</div>'}
+function openForm(p,idToEdit=null){let c=cfg[p];if(!c)return;editing=idToEdit?{key:c.key,id:idToEdit}:null;let item=idToEdit?db[c.key].find(x=>x.id===idToEdit):{};$('#modalTitle').textContent=(idToEdit?'Edit ':'Add ')+p;$('#formFields').innerHTML=c.fields.map(f=>{let [key,label,type,def]=f,val=item?.[key]??(typeof def==='string'&&def!==''?def:'');let input;if(type==='select'){let opts=key==='frequency'?['Daily','Weekly','Monthly','Yearly']:key==='status'?(p==='Subscriptions'?['Active','Paused','Cancelled','Closed']:p==='Invoices'?['Draft','Confirmed','Paid','Overdue']:['Draft','Confirmed','Active','Cancelled']):key==='type'?['Software','Service','Digital']:key==='kind'?['Percentage','Fixed']:key==='method'?['UPI','Card','Bank transfer','Cash']:['Active','Inactive'];input=`<select class="field" name="${key}">${opts.map(o=>`<option ${val===o?'selected':''}>${o}</option>`).join('')}</select>`}else if(type==='ref'){let options=db[def]||[];input=`<select class="field" name="${key}" required><option value="">Select ${label}</option>${options.map(o=>`<option ${val===(o.name||o.id)?'selected':''}>${esc(o.name||o.id)}</option>`).join('')}</select>`}else input=`<input class="field" name="${key}" type="${type}" value="${esc(val)}" ${def===1?'required':''} ${type==='number'?'min="0" step="0.01"':''}>`;return `<div class="form-group ${key==='notes'||key==='note'?'full':''}"><label>${label}</label>${input}</div>`}).join('');$('#modalBack').classList.add('show')}
+function closeForm(){$('#modalBack').classList.remove('show');editing=null}
+$('#recordForm').addEventListener('submit',e=>{e.preventDefault();let p=page,c=cfg[p],data=Object.fromEntries(new FormData(e.target).entries());c.fields.forEach(f=>{if(f[2]==='number')data[f[0]]=Number(data[f[0]]||0)});if(editing){let x=db[editing.key].find(x=>x.id===editing.id);Object.assign(x,data)}else{data.id=id();db[c.key].push(data);if(p==='Subscriptions'){let plan=db.plans.find(x=>x.name===data.plan);data.amount=(+plan?.price||0)*(+data.quantity||1);let invoice={id:id(),customer:data.customer,subscription:data.id,amount:data.amount,due:data.next,status:'Draft'};db.invoices.push(invoice)}if(p==='Quotations')data.amount=+(db.plans.find(x=>x.name===data.plan)?.price||0)}save();closeForm();render();toast('Record saved successfully')});
+function editRecord(k,i){let p=Object.keys(cfg).find(p=>cfg[p].key===k);nav(p);openForm(p,i)}
+function removeRecord(k,i){if(!confirm('Delete this record?'))return;db[k]=db[k].filter(x=>x.id!==i);save();render();toast('Record deleted')}
+function markPaid(i){let x=db.invoices.find(x=>x.id===i);if(!x)return;x.status='Paid';db.payments.push({id:id(),customer:x.customer,invoice:x.id,amount:+x.amount||0,date:new Date().toISOString().slice(0,10),method:'UPI',note:'Recorded from invoice'});save();render();toast('Invoice marked as paid')}
+$('#nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)nav(b.dataset.page)});
+$('#createBtn').onclick=()=>openForm(page==='Dashboard'?'Customers':page);
+$('#closeModal').onclick=closeForm;$('#cancelModal').onclick=closeForm;$('#modalBack').addEventListener('click',e=>{if(e.target.id==='modalBack')closeForm()});
+render();
+</script></body></html>

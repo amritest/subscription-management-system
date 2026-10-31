@@ -1,55 +1,33 @@
-const seed=[
- {id:1,name:"Netflix",category:"Entertainment",price:649,billing:"monthly",renewal:addDays(3),status:"active"},
- {id:2,name:"GitHub Pro",category:"Software",price:400,billing:"monthly",renewal:addDays(6),status:"active"},
- {id:3,name:"Spotify",category:"Entertainment",price:119,billing:"monthly",renewal:addDays(12),status:"active"},
- {id:4,name:"AWS",category:"Cloud",price:1800,billing:"monthly",renewal:addDays(20),status:"active"},
- {id:5,name:"Coursera",category:"Education",price:4999,billing:"yearly",renewal:addDays(45),status:"paused"}
-];
-let data=JSON.parse(localStorage.getItem("subtrack"))||seed;
-function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
-const $=s=>document.querySelector(s);
-const money=n=>"₹"+Math.round(n).toLocaleString("en-IN");
-function monthly(s){return s.billing==="yearly"?s.price/12:s.price}
-function save(){localStorage.setItem("subtrack",JSON.stringify(data));render()}
-function render(){
- const active=data.filter(s=>s.status==="active");
- const monthlySpend=active.reduce((a,s)=>a+monthly(s),0);
- $("#monthlySpend").textContent=money(monthlySpend);
- $("#yearlySpend").textContent=money(monthlySpend*12);
- $("#activeCount").textContent=active.length;
- const now=new Date(), week=new Date();week.setDate(now.getDate()+7);
- $("#dueCount").textContent=active.filter(s=>new Date(s.renewal)<=week).length;
- renderUpcoming();renderList();renderCategories();renderAnalytics();
-}
-function renderUpcoming(){
- const arr=data.filter(s=>s.status==="active").sort((a,b)=>new Date(a.renewal)-new Date(b.renewal)).slice(0,5);
- $("#upcoming").innerHTML=arr.length?arr.map(s=>`<div class="renewal"><strong>${s.name}</strong><span class="muted">${s.category}</span><span>${money(s.price)}/${s.billing==="yearly"?"yr":"mo"}</span><span>${s.renewal}</span></div>`).join(""):"<p class='muted'>No active subscriptions.</p>";
-}
-function renderList(){
- const q=$("#search").value.toLowerCase(), f=$("#filter").value;
- const arr=data.filter(s=>(f==="all"||s.status===f)&&s.name.toLowerCase().includes(q));
- $("#subscriptionList").innerHTML=arr.length?arr.map(s=>`<div class="row"><div><strong>${s.name}</strong><div class="muted">${s.category}</div></div><div>${money(s.price)}/${s.billing==="yearly"?"yr":"mo"}</div><div>${s.renewal}</div><span class="badge ${s.status}">${s.status}</span><button class="delete" onclick="removeSub(${s.id})">Delete</button></div>`).join(""):"<p class='muted'>No subscriptions found.</p>";
-}
-function renderCategories(){
- const totals={};data.filter(s=>s.status==="active").forEach(s=>totals[s.category]=(totals[s.category]||0)+monthly(s));
- const max=Math.max(...Object.values(totals),1);
- $("#categoryChart").innerHTML=Object.entries(totals).map(([k,v])=>`<div class="bar-line"><span>${k}</span><div class="bar"><i style="width:${v/max*100}%"></i></div><b>${money(v)}</b></div>`).join("")||"<p class='muted'>No data yet.</p>";
-}
-function renderAnalytics(){
- const active=data.filter(s=>s.status==="active"), m=active.reduce((a,s)=>a+monthly(s),0);
- $("#analyticsText").innerHTML=`<p><strong>${money(m)}</strong> estimated monthly recurring spend.</p><p><strong>${money(m*12)}</strong> projected yearly recurring spend.</p><p><strong>${active.length}</strong> active services are currently tracked.</p>`;
-}
-function removeSub(id){data=data.filter(s=>s.id!==id);save()}
-document.querySelectorAll(".nav").forEach(btn=>btn.onclick=()=>go(btn.dataset.section));
-document.querySelectorAll("[data-go]").forEach(btn=>btn.onclick=()=>go(btn.dataset.go));
-function go(section){document.querySelectorAll(".section").forEach(x=>x.classList.remove("active-section"));$("#"+section).classList.add("active-section");document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.section===section));$("#pageTitle").textContent=section[0].toUpperCase()+section.slice(1)}
-$("#openModal").onclick=()=>$("#modal").classList.remove("hidden");
-$("#closeModal").onclick=()=>$("#modal").classList.add("hidden");
-$("#modal").onclick=e=>{if(e.target.id==="modal")$("#modal").classList.add("hidden")};
-$("#search").oninput=renderList;$("#filter").onchange=renderList;
-$("#form").onsubmit=e=>{
- e.preventDefault();const f=new FormData(e.target);
- data.push({id:Date.now(),name:f.get("name"),category:f.get("category"),price:Number(f.get("price")),billing:f.get("billing"),renewal:f.get("renewal"),status:f.get("status")});
- save();e.target.reset();$("#modal").classList.add("hidden");
+const $=s=>document.querySelector(s), money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2}), today=()=>new Date().toISOString().slice(0,10);
+const blank=()=>({products:[{id:1,name:'Brightloop Workspace',type:'Software',price:1200,cost:300,frequency:'Monthly',status:'Active'},{id:2,name:'Cloud Storage',type:'Add-on',price:500,cost:120,frequency:'Yearly',status:'Active'}],customers:[{id:1,name:'GreenMart Stores',email:'hello@greenmart.in',phone:'9876543210',company:'GreenMart'},{id:2,name:'NovaTech Solutions',email:'ops@novatech.in',phone:'9876501234',company:'NovaTech'}],subscriptions:[{id:1,customer:'GreenMart Stores',product:'Brightloop Workspace',amount:1200,frequency:'Monthly',start:today(),status:'Active'},{id:2,customer:'NovaTech Solutions',product:'Cloud Storage',amount:500,frequency:'Yearly',start:today(),status:'Paused'}],quotations:[],invoices:[{id:1,customer:'GreenMart Stores',amount:1416,tax:18,due:today(),status:'Paid',subscription:1},{id:2,customer:'NovaTech Solutions',amount:590,tax:18,due:today(),status:'Unpaid',subscription:2}],payments:[{id:1,invoice:1,customer:'GreenMart Stores',amount:1416,date:today(),method:'UPI'}],discounts:[]});
+let db;try{db=JSON.parse(localStorage.subwiseData)||blank()}catch{db=blank()}let page='Dashboard',editId=null;
+const save=()=>{localStorage.subwiseData=JSON.stringify(db);render()};
+const fields={
+Products:[['name','Product name','text'],['type','Type','select','Software,Service,Add-on'],['price','Sales price','number'],['cost','Cost price','number'],['frequency','Billing frequency','select','Daily,Weekly,Monthly,Yearly']],
+Customers:[['name','Customer name','text'],['email','Email','email'],['phone','Phone','text'],['company','Company','text']],
+Subscriptions:[['customer','Customer','select',()=>db.customers.map(x=>x.name).join(',')],['product','Product','select',()=>db.products.map(x=>x.name).join(',')],['amount','Amount','number'],['frequency','Billing frequency','select','Daily,Weekly,Monthly,Yearly'],['start','Start date','date'],['status','Status','select','Draft,Active,Paused,Closed']],
+Quotations:[['customer','Customer','select',()=>db.customers.map(x=>x.name).join(',')],['product','Product','select',()=>db.products.map(x=>x.name).join(',')],['amount','Amount','number'],['validUntil','Valid until','date'],['status','Status','select','Draft,Sent,Confirmed']],
+Invoices:[['customer','Customer','select',()=>db.customers.map(x=>x.name).join(',')],['amount','Subtotal','number'],['tax','Tax %','number'],['due','Due date','date'],['status','Status','select','Draft,Unpaid,Paid,Overdue,Cancelled']],
+Payments:[['invoice','Invoice ID','number'],['customer','Customer','text'],['amount','Payment amount','number'],['date','Payment date','date'],['method','Method','select','UPI,Bank Transfer,Cash,Card']],
+Discounts:[['code','Discount code','text'],['type','Discount type','select','Percentage,Fixed'],['value','Discount value','number'],['minimum','Minimum purchase','number'],['validUntil','Valid until','date'],['usageLimit','Usage limit','number']]
 };
+function records(){return db[page.toLowerCase()]||[]}
+function render(){
+$('#title').textContent=page;$('#subtitle').textContent=page==='Dashboard'?'Overview of your subscription business':`Manage ${page.toLowerCase()} and business records`;$('#tableTitle').textContent=page==='Dashboard'?'Recent invoices':page;
+document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+let active=db.subscriptions.filter(x=>x.status==='Active').length, revenue=db.payments.reduce((s,x)=>s+ +x.amount,0),out=db.invoices.filter(x=>x.status!=='Paid'&&x.status!=='Cancelled').reduce((s,x)=>s+ +x.amount,0);
+$('#stats').innerHTML=(page==='Dashboard'?[['Active subscriptions',active],['Revenue collected',money(revenue)],['Outstanding invoices',money(out)],['Customers',db.customers.length]]: [['Total records',records().length],['Active subscriptions',active],['Revenue collected',money(revenue)],['Outstanding',money(out)]]).map(x=>`<div class="card stat"><small>${x[0]}</small><strong>${x[1]}</strong><small>Current workspace</small></div>`).join('');
+let list=page==='Dashboard'?db.invoices.slice(-8).reverse():records();let q=$('#search').value.toLowerCase();list=list.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+if(page==='Reports')list=[{metric:'Active subscriptions',value:active},{metric:'Collected revenue',value:money(revenue)},{metric:'Outstanding invoices',value:money(out)},{metric:'Overdue invoices',value:db.invoices.filter(x=>x.status==='Overdue').length},{metric:'Total customers',value:db.customers.length}];
+let cols=page==='Reports'?['metric','value']:page==='Dashboard'?['id','customer','amount','due','status']:({Products:['id','name','type','price','cost','frequency','status'],Customers:['id','name','email','phone','company'],Subscriptions:['id','customer','product','amount','frequency','start','status'],Quotations:['id','customer','product','amount','validUntil','status'],Invoices:['id','customer','amount','tax','due','status'],Payments:['id','invoice','customer','amount','date','method'],Discounts:['id','code','type','value','minimum','validUntil','usageLimit']})[page]||[];
+if(!list.length){$('#content').innerHTML='<div class="empty">No records found. Click “Add New” to create one.</div>';return}
+$('#content').innerHTML=`<table><thead><tr>${cols.map(c=>`<th>${c.toUpperCase()}</th>`).join('')}<th>ACTIONS</th></tr></thead><tbody>${list.map(x=>`<tr>${cols.map(c=>`<td>${c==='amount'||c==='price'||c==='cost'||c==='value'?money(x[c]):c==='status'?`<span class="pill ${['Paused','Draft','Unpaid','Overdue'].includes(x[c])?'warn':''}">${x[c]||'-'}</span>`:(x[c]??'-')}</td>`).join('')}<td>${page==='Subscriptions'?`<button class="secondary" onclick="act(${x.id},'${x.status==='Active'?'Paused':x.status==='Paused'?'Active':'Active'}')">${x.status==='Active'?'Pause':'Activate'}</button>`:''} <button class="secondary" onclick="edit(${x.id})">Edit</button> <button class="danger" onclick="del(${x.id})">Delete</button></td></tr>`).join('')}</tbody></table>`;
+}
+function showForm(id=null){editId=id;let f=fields[page];if(!f)return alert('Reports are read-only.');let old=records().find(x=>x.id===id)||{};$('#modalTitle').textContent=(id?'Edit ':'Add ')+page.slice(0,-1);$('#fields').innerHTML=f.map(([k,label,type,opts])=>{let options=typeof opts==='function'?opts():opts;return `<div class="field"><label>${label}</label>${type==='select'?`<select name="${k}">${(options||'').split(',').filter(Boolean).map(v=>`<option ${old[k]===v?'selected':''}>${v}</option>`).join('')}</select>`:`<input name="${k}" type="${type}" value="${old[k]??''}" ${['name','email','code','amount','price'].includes(k)?'required':''}>`}</div>`}).join('');$('#modal').classList.add('show')}
+function edit(id){showForm(id)}function del(id){if(!confirm('Delete this record?'))return;db[page.toLowerCase()]=records().filter(x=>x.id!==id);save()}
+function act(id,status){let s=db.subscriptions.find(x=>x.id===id);s.status=status;if(status==='Active'&&!db.invoices.some(i=>i.subscription===id&&i.status!=='Cancelled'))db.invoices.push({id:Date.now(),customer:s.customer,amount:+s.amount*1.18,tax:18,due:today(),status:'Unpaid',subscription:id});save()}
+$('#nav').onclick=e=>{let b=e.target.closest('button[data-page]');if(b){page=b.dataset.page;$('#search').value='';render()}};
+$('#addBtn').onclick=()=>showForm();$('#cancel').onclick=()=>$('#modal').classList.remove('show');$('#search').oninput=render;
+$('#recordForm').onsubmit=e=>{e.preventDefault();let obj=Object.fromEntries(new FormData(e.target));for(let k of ['price','cost','amount','tax','value','minimum','usageLimit','invoice'])if(obj[k]!==undefined)obj[k]=+obj[k];if(page==='Customers'&&db.customers.some(x=>x.email===obj.email&&x.id!==editId))return alert('Email already exists');if(page==='Invoices')obj.amount=+(obj.amount||0)*(1+(+(obj.tax||0))/100);if(editId){let x=records().find(x=>x.id===editId);Object.assign(x,obj)}else{obj.id=Date.now();records().push(obj)}$('#modal').classList.remove('show');save()};
+$('#exportBtn').onclick=()=>{let rows=records();if(!rows.length)return;let keys=Object.keys(rows[0]);let csv=[keys.join(','),...rows.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(','))].join('\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=page.toLowerCase()+'.csv';a.click()};
 render();
