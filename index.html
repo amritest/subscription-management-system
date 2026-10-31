@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubTrack — Subscription Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">SubTrack</div>
+    <p class="tagline">Subscription Management</p>
+    <nav>
+      <button class="nav active" data-section="dashboard">Dashboard</button>
+      <button class="nav" data-section="subscriptions">Subscriptions</button>
+      <button class="nav" data-section="analytics">Analytics</button>
+    </nav>
+    <div class="side-note">
+      <strong>Hackathon MVP</strong>
+      <span>Track renewals, spending and subscription status in one place.</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p>Keep every recurring payment under control.</p>
+      </div>
+      <button class="primary" id="openModal">+ Add Subscription</button>
+    </header>
+
+    <section id="dashboard" class="section active-section">
+      <div class="stats">
+        <article class="card"><span>Monthly spend</span><strong id="monthlySpend">₹0</strong><small>Estimated recurring cost</small></article>
+        <article class="card"><span>Active subscriptions</span><strong id="activeCount">0</strong><small>Currently running</small></article>
+        <article class="card"><span>Due in 7 days</span><strong id="dueCount">0</strong><small>Renewals approaching</small></article>
+        <article class="card"><span>Yearly estimate</span><strong id="yearlySpend">₹0</strong><small>Projected recurring cost</small></article>
+      </div>
+
+      <div class="grid two">
+        <article class="panel">
+          <div class="panel-head"><h2>Upcoming renewals</h2><button class="link-btn" data-go="subscriptions">View all</button></div>
+          <div id="upcoming"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><h2>Spending by category</h2></div>
+          <div id="categoryChart" class="bars"></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="subscriptions" class="section">
+      <div class="toolbar">
+        <input id="search" placeholder="Search subscriptions...">
+        <select id="filter">
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="paused">Paused</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="panel">
+        <div id="subscriptionList"></div>
+      </div>
+    </section>
+
+    <section id="analytics" class="section">
+      <div class="grid two">
+        <article class="panel">
+          <h2>Cost overview</h2>
+          <div id="analyticsText"></div>
+        </article>
+        <article class="panel">
+          <h2>Smart actions</h2>
+          <ul class="tips">
+            <li>Review subscriptions you have not used recently.</li>
+            <li>Set renewal reminders before the billing date.</li>
+            <li>Compare monthly and yearly plans before renewing.</li>
+            <li>Cancel or pause subscriptions you no longer need.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal hidden" id="modal">
+    <div class="modal-card">
+      <button class="close" id="closeModal">×</button>
+      <h2>Add subscription</h2>
+      <form id="form">
+        <label>Service name<input required name="name" placeholder="Netflix"></label>
+        <label>Category
+          <select name="category">
+            <option>Entertainment</option><option>Software</option><option>Education</option>
+            <option>Fitness</option><option>Cloud</option><option>Other</option>
+          </select>
+        </label>
+        <label>Price (₹)<input required min="1" type="number" name="price" placeholder="649"></label>
+        <label>Billing
+          <select name="billing"><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select>
+        </label>
+        <label>Next renewal<input required type="date" name="renewal"></label>
+        <label>Status
+          <select name="status"><option value="active">Active</option><option value="paused">Paused</option><option value="cancelled">Cancelled</option></select>
+        </label>
+        <button class="primary full" type="submit">Save subscription</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
